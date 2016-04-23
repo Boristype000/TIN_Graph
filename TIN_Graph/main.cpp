@@ -32,7 +32,7 @@ int main()
 
 	//tPointList.output();
 
-	myQueue tQueue;
+	/*myQueue tQueue;
 	for (int i = 0; i < 5; i++)
 	{
 		int tID; double tX, tY;
@@ -43,7 +43,7 @@ int main()
 	tQueue.output();
 	cout << endl;
 	tQueue.pop_front();
-	tQueue.output();
+	tQueue.output();*/
 
 
 	system("pause");

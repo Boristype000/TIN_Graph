@@ -36,7 +36,7 @@ protected:
 public:
 	myList() { head = NULL; tail = NULL; size = 0; }
 	//myList(myList &);
-	 ~myList() { remove(); }
+	 ~myList() { remove(); }//基类的析构一定要virtual！！
 
 	void insert(Node *_pNode)//插入函数
 	{
@@ -80,7 +80,7 @@ public:
 			delete pMove;
 			return;
 		}
-		if (index == getSize() - 1)
+		if (index == getLength() - 1)
 			//处理删除尾结点情况
 		{
 			pMove = tail;
