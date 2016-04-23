@@ -117,3 +117,11 @@ double Triangle::getArea()
 void Triangle::printData()
 {
 }
+
+TIN_Point::TIN_Point(int _id, double _x, double _y)
+{
+	id = _id;
+	lat = _x;
+	lng = _y;
+	lcDistance = getPtsDist(0, 0, lat, lng);
+}

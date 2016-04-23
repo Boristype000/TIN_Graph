@@ -18,19 +18,20 @@ int main()
 	//cout << endl;
 	//cout << testList.getLength()<< endl;
 
-	//myList tPointList;
-	//int tID;
-	//double tX, tY;
-	//int tC = 0;
-	//while (tC != -1)
-	//{
-	//	cin >> tID >> tX >> tY;
-	//	TIN_Point *tPoint=new TIN_Point(tID, tX, tY);
-	//	tPointList.insert(tPoint);
-	//	cin >> tC;
-	//}
-
-	//tPointList.output();
+	myList tPointList;
+	int tID;
+	double tX, tY;
+	int tC = 0;
+	while (tC != -1)
+	{
+		cin >> tID >> tX >> tY;
+		TIN_Point *tPoint=new TIN_Point(tID, tX, tY);
+		tPointList.insert(tPoint);
+		cin >> tC;
+	}
+	tPointList.output();
+	tPointList.sort_merge();
+	tPointList.output();
 
 	/*myQueue tQueue;
 	for (int i = 0; i < 5; i++)
