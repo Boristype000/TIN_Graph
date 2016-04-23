@@ -10,7 +10,6 @@ double rad(double d)
 {
 	return d * PI / 180.0;
 }
-
 /*******************************************************************
 * 返回两个地点P1(lng1, lat1)和P2(lng2, lat2)的近似大地线距离(单位 km)
 * double lng1: 第一个地点的经度(角度)
@@ -35,73 +34,12 @@ double getPtsDist(double lat1, double lng1, double lat2, double lng2)
 }
 
 
-TIN_Edge::TIN_Edge()
-{
-	pVertexE[0] = pVertexE[1] = NULL; 
-	pTri = NULL; 
-	nTri = -1;
-	length = -1;
-}
-
-TIN_Edge::TIN_Edge(int _id, TIN_Point *_Point1, TIN_Point *_Point2)
+Triangle::Triangle(int _id, TIN_Point *_point1, TIN_Point *_point2, TIN_Point *_point3)
 {
 	id = _id;
-	pVertexE[0] = _Point1;
-	pVertexE[1] = _Point2;
-	length = getPtsDist(pVertexE[0]->getLat(), pVertexE[0]->getLng, pVertexE[1]->getLat(), pVertexE[1]->getLng);
-}
-
-
-
-TIN_Edge::~TIN_Edge()
-{
-	if (pVertexE[0] != NULL)
-	{
-		delete pVertexE[0];
-		delete pVertexE[1];
-	}
-	if (pTri != NULL)
-	{
-		delete pTri;
-	}
-}
-
-void TIN_Edge::printData()
-{
-	cout << "端点一\t" << "id:" << pVertexE[0]->getID() << "\t" << "X坐标为： "
-		<< pVertexE[0]->getLat() << "\t" << "Y坐标为： " << pVertexE[0]->getLng() << endl;
-	cout << "端点一\t" << "id:" << pVertexE[1]->getID() << "\t" << "X坐标为： "
-		<< pVertexE[1]->getLat() << "\t" << "Y坐标为： " << pVertexE[1]->getLng() << endl;
-
-}
-
-Triangle::Triangle()
-{
-	pVertexT[0] = pVertexT[1] = pVertexT[2] = NULL;
-	pEdgeT[0] = pEdgeT[1] = pEdgeT[2] = NULL;
-}
-
-Triangle::Triangle(int _id, TIN_Edge * _edge1, TIN_Edge * _edge2, TIN_Edge * _edge3)
-{
-	id = _id;
-
-	pEdgeT[0] = _edge1;
-	pEdgeT[1] = _edge2;
-	pEdgeT[2] = _edge3;
-
-	pVertexT[0] = pEdgeT[0]->getVertex1();
-	pVertexT[1] = pEdgeT[0]->getVertex2();
-	pVertexT[2] = 
-		(	
-			pEdgeT[1]->getVertex1() == pVertexT[0] ||
-			pEdgeT[1]->getVertex1() == pVertexT[1]?
-			pEdgeT[1]->getVertex2():
-			pEdgeT[1]->getVertex1()
-		);
-
-
-
-	
+	pVertexT[0] = _point1;
+	pVertexT[1] = _point2;
+	pVertexT[2] = _point3;
 }
 
 Triangle::~Triangle()
@@ -116,6 +54,15 @@ double Triangle::getArea()
 
 void Triangle::printData()
 {
+}
+
+TIN_Graph::TIN_Graph()
+{
+}
+
+TIN_Graph::~TIN_Graph()
+{
+
 }
 
 TIN_Point::TIN_Point(int _id, double _x, double _y)

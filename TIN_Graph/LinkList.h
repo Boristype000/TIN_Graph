@@ -135,7 +135,7 @@ public:
 			delete pMove;
 			return;
 		}
-		if (index == getLength() - 1)
+		if (index == size - 1)
 			//处理删除尾结点情况
 		{
 			pMove = tail;
