@@ -11,8 +11,8 @@ class myList
 {
 protected:
 	Node* head;//表头指针
-	int size;//链表长度
 	Node* tail;//表尾指针
+	int size;//链表长度
 	void remove()
 	{
 		if (head != NULL)
@@ -93,7 +93,7 @@ public:
 	//myList(myList &);
 	 ~myList() { remove(); }//基类的析构一定要virtual！！
 
-	void insert(Node *_pNode)//插入函数
+	void push_back(Node *_pNode)//插入函数
 	{
 		if (head == NULL)
 		{
@@ -164,7 +164,10 @@ public:
 	}
 	int getSize() { return size; }
 
-	void sort_merge()
+	Node* front() { return head; }
+	Node* back() { return tail; }
+
+	void sort()
 	{
 		head = merge_sort(head);
 

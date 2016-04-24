@@ -26,11 +26,11 @@ int main()
 	{
 		cin >> tID >> tX >> tY;
 		TIN_Point *tPoint=new TIN_Point(tID, tX, tY);
-		tPointList.insert(tPoint);
+		tPointList.push_back(tPoint);
 		cin >> tC;
 	}
 	tPointList.output();
-	tPointList.sort_merge();
+	tPointList.sort();
 	tPointList.output();
 
 	/*myQueue tQueue;

@@ -11,7 +11,6 @@ public:
 	myQueue():myList(){}
 	~myQueue() {/* remove(); */}//析构函数先析构派生类再析构基类
 
-	void push_back(Node* _pNode) { insert(_pNode); }
 
 
 	bool isEmpty() { return (head == NULL ? true : false); }
