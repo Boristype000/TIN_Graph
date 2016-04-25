@@ -8,21 +8,15 @@ class TIN_Point :public Node
 {
 private:
 	double lat, lng;//每个点的坐标值
-	myList *edgeList;//边表指针
+	myList edgeList;//边表指针
 
 public:
 	double lcDistance;//距离左下角的距离
 	short nSingleEdgeCount;//单边计数
 
-	TIN_Point() :lat(0), lng(0), lcDistance(0) { edgeList = NULL; nSingleEdgeCount = -1; }
+	TIN_Point() :lat(0), lng(0), lcDistance(0) { nSingleEdgeCount = -1; }
 	TIN_Point(int _id, double _x, double _y);
-	~TIN_Point()
-	{
-		if (edgeList != NULL)
-		{
-			delete edgeList;
-		}
-	}
+	~TIN_Point() {}
 	
 	//获取和修改id的函数
 	int getID() { return id; }
@@ -35,7 +29,7 @@ public:
 	//排序种子函数，返回该派生类用于排序的依据
 	double sortSeed() { return lcDistance; }
 
-	myList* getEdgeList() { return edgeList; }
+	myList &getEdgeList() { return edgeList; }
 	virtual void printData() { cout << id << " " << lat << " " << lng << endl; }
 };
 
@@ -47,6 +41,7 @@ private:
 public:
 	TIN_Edge() { nCount = 0; pPoint = NULL; }
 	TIN_Edge(TIN_Point *_Point, int nCO) { pPoint = _Point; nCount = nCO; }
+	~TIN_Edge() { delete pPoint; }
 };
 
 class Triangle :public Node

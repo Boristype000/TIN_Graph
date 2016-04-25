@@ -23,6 +23,7 @@ protected:
 				Node *pDel = pMove;
 				pMove = pMove->next;
 				delete pDel;
+				pDel = NULL;
 			}
 		}
 		else
@@ -91,7 +92,7 @@ protected:
 public:
 	myList() { head = NULL; tail = NULL; size = 0; }
 	//myList(myList &);
-	 ~myList() { remove(); }//基类的析构一定要virtual！！
+	 ~myList() { remove(); }
 
 	void push_back(Node *_pNode)//插入函数
 	{

@@ -94,6 +94,7 @@ void TIN_Graph::sortPointList()
 
 void TIN_Graph::initTri()
 {
+	sortPointList();
 	//另离左下角最近的点，即点链表头为p1
 	TIN_Point * p1 = dynamic_cast<TIN_Point*>(lPoint.front());
 	//使用dynamic_cast转换指针
@@ -121,7 +122,11 @@ void TIN_Graph::initTri()
 	while (pMove_n != NULL)
 	{
 		TIN_Point * pMove = dynamic_cast<TIN_Point*>(pMove_n);
-		if (pMove == p2)pMove_n = pMove_n->next;
+		if (pMove == p2)
+		{
+			pMove_n = pMove_n->next;
+			continue;
+		}
 		if (getCos3Pts(p1, pMove, p2) < dCosMin)
 		{
 			dCosMin = getCos3Pts(p1, pMove, p2);
@@ -129,24 +134,20 @@ void TIN_Graph::initTri()
 		}
 		pMove_n = pMove_n->next;
 	}
-	//给三个点的边表开辟新的空间
-	p1->getEdgeList = new myList;
-	p2->getEdgeList = new myList;
-	p3->getEdgeList = new myList;
 	//初始化三个边，并将它们push进三个点的边表中。
 	//是否需要id值？
 	TIN_Edge *s1 = new TIN_Edge(p1, 1);
 	TIN_Edge *s2 = new TIN_Edge(p2, 1);
 	TIN_Edge *s3 = new TIN_Edge(p3, 1);
 
-	p1->getEdgeList()->push_back(s2);
-	p1->getEdgeList()->push_back(s3);
-
-	p2->getEdgeList()->push_back(s1);
-	p2->getEdgeList()->push_back(s3);
-
-	p3->getEdgeList()->push_back(s1);
-	p3->getEdgeList()->push_back(s2);
+	p1->getEdgeList().push_back(s2);
+	p1->getEdgeList().push_back(s3);
+					 
+	p2->getEdgeList().push_back(s1);
+	p2->getEdgeList().push_back(s3);
+					 
+	p3->getEdgeList().push_back(s1);
+	p3->getEdgeList().push_back(s2);
 	//将三角形push进三角集中
 	Triangle * pTri = new Triangle(nTri, p1, p2, p3);
 	lTriangle.push_back(pTri);
