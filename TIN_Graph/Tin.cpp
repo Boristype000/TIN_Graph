@@ -140,6 +140,8 @@ void TIN_Graph::initTri()
 	TIN_Edge *s2 = new TIN_Edge(p2, 1);
 	TIN_Edge *s3 = new TIN_Edge(p3, 1);
 
+	s1->nCount = s2->nCount = s3->nCount = 1;
+
 	p1->getEdgeList().push_back(s2);
 	p1->getEdgeList().push_back(s3);
 					 
