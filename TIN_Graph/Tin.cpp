@@ -130,9 +130,9 @@ void TIN_Graph::initTri()
 		pMove_n = pMove_n->next;
 	}
 	//给三个点的边表开辟新的空间
-	p1->getEdgeList = new myList();
-	p2->getEdgeList = new myList();
-	p3->getEdgeList = new myList();
+	p1->getEdgeList = new myList;
+	p2->getEdgeList = new myList;
+	p3->getEdgeList = new myList;
 	//初始化三个边，并将它们push进三个点的边表中。
 	//是否需要id值？
 	TIN_Edge *s1 = new TIN_Edge(p1, 1);
@@ -179,6 +179,13 @@ void TIN_Graph::insertPoint(TIN_Point * _Point)
 
 void TIN_Graph::buildTIN()
 {
+	if (nPoint < 3)
+	{
+		cout << "Point number is less than 3!" << endl;
+		return;
+	}
+	initTri();
+
 }
 
 TIN_Point::TIN_Point(int _id, double _x, double _y)

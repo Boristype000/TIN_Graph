@@ -18,7 +18,7 @@ int main()
 	//cout << endl;
 	//cout << testList.getLength()<< endl;
 
-	myList tPointList;
+	/*myList tPointList;
 	int tID;
 	double tX, tY;
 	int tC = 0;
@@ -31,7 +31,7 @@ int main()
 	}
 	tPointList.output();
 	tPointList.sort();
-	tPointList.output();
+	tPointList.output();*/
 
 	/*myQueue tQueue;
 	for (int i = 0; i < 5; i++)
@@ -45,6 +45,16 @@ int main()
 	cout << endl;
 	tQueue.pop_front();
 	tQueue.output();*/
+	int tID;
+	double tX, tY;
+	TIN_Graph testGraph;
+	for (int i = 0; i < 5; i++)
+	{
+		cin >> tID >> tX >> tY;
+		TIN_Point * temp = new TIN_Point(tID, tX, tY);
+		testGraph.insertPoint(temp);
+	}
+	testGraph.buildTIN();
 
 
 	system("pause");

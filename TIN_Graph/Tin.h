@@ -32,7 +32,7 @@ public:
 	//获取坐标的函数
 	double getLat() { return lat; }
 	double getLng () { return lng; }
-	//排序种子函数
+	//排序种子函数，返回该派生类用于排序的依据
 	double sortSeed() { return lcDistance; }
 
 	myList* getEdgeList() { return edgeList; }
