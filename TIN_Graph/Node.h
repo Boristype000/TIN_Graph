@@ -12,11 +12,14 @@ public:
 	Node(int _id) { id = _id; next = NULL; prev = NULL; }
 	Node() { id = 0; next = NULL; prev = NULL; }
 	int getID() { return id; }
+	void setID(int _id) { id = _id; }
 	virtual void printData()
 	{
 		cout << id << " ";
 	}
 	virtual double sortSeed() { return id; }
+
+
 	//virtual double searchSeed() { return id; }
 
 };

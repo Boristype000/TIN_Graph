@@ -80,9 +80,10 @@ class Triangle :public Node
 private:
 	TIN_Point * pVertexT[3];//三角形顶点指针
 public:
-	Triangle(int _id, TIN_Point*, TIN_Point*, TIN_Point*);
+	Triangle(TIN_Point*, TIN_Point*, TIN_Point*);
 	~Triangle();
 
+	void getVertex(TIN_Point*&, TIN_Point*&, TIN_Point*&);
 	double getArea();//计算每个三角形的面积
 	void printData();
 };
@@ -98,7 +99,8 @@ private:
 
 	bool Delaunay(TIN_Point *, TIN_Point *, TIN_Point *, TIN_Point *);
 		//用于判断四点是否满足Delaunay准则
-
+	TIN_Edge * findEdge(TIN_Point * pSource, TIN_Point * _pPoint);
+	void addPoint2Edge(TIN_Point *p1,TIN_Point *p2);
 	void sortPointList();//用来使点集按到右下角距离排序的函数
 	void initTri();//创建第一个三角形
 	void triExpand(int _triID);//三角形拓展函数，传入参数为三角形号

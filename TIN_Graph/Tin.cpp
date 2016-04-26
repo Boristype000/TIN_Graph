@@ -51,6 +51,7 @@ double getPtsDist_s(TIN_Point *Point1,TIN_Point *Point2)
 }
 
 double getCos3Pts(TIN_Point *p1, TIN_Point *p2, TIN_Point *p3)
+//获得p2角度的cos值
 {
 	double s1 = getPtsDist_s(p2, p3);
 	double s2 = getPtsDist_s(p1, p3);
@@ -62,9 +63,9 @@ double getCos3Pts(TIN_Point *p1, TIN_Point *p2, TIN_Point *p3)
 }
 
 
-Triangle::Triangle(int _id, TIN_Point *_point1, TIN_Point *_point2, TIN_Point *_point3)
+Triangle::Triangle(TIN_Point *_point1, TIN_Point *_point2, TIN_Point *_point3)
 {
-	id = _id;
+	id = -1;
 	pVertexT[0] = _point1;
 	pVertexT[1] = _point2;
 	pVertexT[2] = _point3;
@@ -76,6 +77,13 @@ Triangle::~Triangle()
 	{
 		delete pVertexT[i];
 	}
+}
+
+void Triangle::getVertex(TIN_Point *&_p1, TIN_Point *&_p2, TIN_Point *&_p3)
+{
+	_p1 = pVertexT[0];
+	_p2 = pVertexT[1];
+	_p3 = pVertexT[2];
 }
 
 double Triangle::getArea()
@@ -145,6 +153,51 @@ bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Poi
 	return true;
 }
 
+TIN_Edge * TIN_Graph::findEdge(TIN_Point * pSource, TIN_Point * _pPoint)
+{
+	Node *pMove_n = pSource->getEdgeList().front();
+	TIN_Edge* pMove = dynamic_cast<TIN_Edge*>(pMove_n);
+	while (pMove_n->next != NULL && pMove->getPointer() != _pPoint)
+	{
+		pMove_n = pMove_n->next;
+		TIN_Edge* pMove = dynamic_cast<TIN_Edge*>(pMove_n);
+	}
+	if (pMove->getPointer() == _pPoint)
+	{
+		return pMove;
+	}
+	else
+	{
+		return NULL;
+	}
+	/*while (pMove->next != NULL && pMove!= )
+	{
+	pMove = pMove->next;
+	}
+	if (pMove->getID() == _id)
+	{
+	return pMove;
+
+	}
+	else
+	{
+	return NULL;
+	}*/
+}
+
+void TIN_Graph::addPoint2Edge(TIN_Point *_p1, TIN_Point *_p2)
+{
+	if (TIN_Edge* edge1 = findEdge(_p1, _p2))
+	{
+		edge1->nCount++;
+	}
+	else
+	{
+		TIN_Edge *pInsert = new TIN_Edge(_p2, 1);
+		_p1->getEdgeList().push_back(pInsert);
+	}
+}
+
 void TIN_Graph::sortPointList()
 {
 	lPoint.sort();
@@ -209,9 +262,29 @@ void TIN_Graph::initTri()
 	p3->getEdgeList().push_back(s1);
 	p3->getEdgeList().push_back(s2);
 	//将三角形push进三角集中
-	Triangle * pTri = new Triangle(nTri, p1, p2, p3);
+	Triangle * pTri = new Triangle(p1, p2, p3);
 	lTriangle.push_back(pTri);
+	nTri = 1;
 
+}
+
+void TIN_Graph::triExpand(int _triID)
+{
+	Node * pMove_n = lTriangle.front();
+	Triangle* pMove = NULL;
+	while (pMove_n)
+	{
+		pMove = dynamic_cast<Triangle*>(pMove_n);
+		if (pMove->getID() == _triID)
+		{
+			break;
+		}
+		pMove_n = pMove_n->next;
+	}
+	TIN_Point* p1, *p2, *p3;
+	pMove->getVertex(p1, p2, p3);
+	edgeExpand(p2, p3, p1);
+	edgeExpand(p3, p1, p2);
 }
 
 void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
@@ -227,8 +300,37 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 	//	}
 	//	pMove_n = pMove_n->next;
 	//}
+	Node *pMove_n = lPoint.front();
+	double dCosMin = 1.0;
+	TIN_Point * _p4 = NULL;
+	while (pMove_n)
+	{
+		TIN_Point * pMove = dynamic_cast<TIN_Point*>(pMove_n);
+		if (pMove == _p1 || pMove == _p2 || pMove == _p3)
+		{
+			pMove_n = pMove_n->next; continue;
+		}
+		if (Delaunay(_p1, _p2, _p3, pMove))
+		{
+			_p4 = pMove;
+			dCosMin = getCos3Pts(_p1, _p4, _p2);
+		}
+		pMove_n = pMove_n->next;
+	}
+	if (_p4 == NULL)return;//如果p4仍为空指针，也就是并未找到可用的p4，直接返回
+	
+	Triangle * newTri = new Triangle(_p1, _p2, _p4);
+	lTriangle.push_back(newTri);
+	nTri++;
 
+	addPoint2Edge(_p1, _p2);
+	addPoint2Edge(_p1, _p4);
+	addPoint2Edge(_p2, _p1);
+	addPoint2Edge(_p2, _p4);
+	addPoint2Edge(_p4, _p1);
+	addPoint2Edge(_p4, _p2);
 
+	//还没有优化
 
 }
 

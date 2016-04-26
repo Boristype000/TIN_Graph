@@ -100,14 +100,15 @@ public:
 		{
 			head = _pNode;
 			size++;
+			_pNode->setID(0);
 			tail = _pNode;
 			return;
 		}
 		tail->next = _pNode;
 		_pNode->prev = tail;
 		tail = _pNode;
+		_pNode->setID(size);
 		size++;
-		
 	}
 	void output()
 	{
@@ -163,8 +164,10 @@ public:
 			size--;
 		}
 	}
-	int getSize() { return size; }
+	const int getSize() { return size; }
 	bool isEmpty() { return (head == NULL ? true : false); }
+	
+
 
 	Node* front() { return head; }
 	Node* back() { return tail; }
@@ -189,6 +192,23 @@ public:
 		}
 	}
 
+	/*Node* find(int _id)
+	{
+		Node *pMove = head;
+		while (pMove->next != NULL && pMove->getID() != _id)
+		{
+			pMove = pMove->next;
+		}
+		if (pMove->getID() == _id)
+		{
+			return pMove;
+
+		}
+		else
+		{
+			return NULL;
+		}
+	}*/
 
 	//Node* search_half(int, Node*);
 };
