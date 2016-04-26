@@ -43,7 +43,7 @@ public:
 	{ 
 		return edgeList;
 	}
-	virtual void printData()
+	void printData()
 	{
 		cout << id << " " << lat << " " << lng << endl;
 	}
@@ -57,7 +57,10 @@ private:
 
 public:
 	short nCount;//同一条边最多被使用两次
-
+	const TIN_Point* getPointer()
+	{
+		return pPoint;
+	}
 	TIN_Edge() 
 	{
 		nCount = 0; pPoint = NULL;
@@ -81,7 +84,7 @@ public:
 	~Triangle();
 
 	double getArea();//计算每个三角形的面积
-	virtual void printData();
+	void printData();
 };
 
 
@@ -93,8 +96,13 @@ private:
 	myList lTriangle;//三角集
 	bool * visited;//访问数组，在最短路算法中发挥作用
 
+	bool Delaunay(TIN_Point *, TIN_Point *, TIN_Point *, TIN_Point *);
+		//用于判断四点是否满足Delaunay准则
+
 	void sortPointList();//用来使点集按到右下角距离排序的函数
 	void initTri();//创建第一个三角形
+	void triExpand(int _triID);//三角形拓展函数，传入参数为三角形号
+	void edgeExpand(TIN_Point*, TIN_Point*, TIN_Point*);//边拓展函数，p1p2待扩展
 
 
 public:

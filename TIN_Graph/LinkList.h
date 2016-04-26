@@ -164,6 +164,7 @@ public:
 		}
 	}
 	int getSize() { return size; }
+	bool isEmpty() { return (head == NULL ? true : false); }
 
 	Node* front() { return head; }
 	Node* back() { return tail; }

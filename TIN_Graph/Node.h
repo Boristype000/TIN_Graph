@@ -17,5 +17,6 @@ public:
 		cout << id << " ";
 	}
 	virtual double sortSeed() { return id; }
+	//virtual double searchSeed() { return id; }
 
 };

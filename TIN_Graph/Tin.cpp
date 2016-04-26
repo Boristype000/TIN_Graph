@@ -87,6 +87,64 @@ void Triangle::printData()
 {
 }
 
+bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Point *_p4)
+{
+	//准则1，p4不在边p1p2上，用经纬度构成的斜率来判断
+	{
+		double k1 = (_p4->getLat() - _p1->getLat()) / (_p4->getLng() - _p1->getLng());
+		double k2 = (_p2->getLat() - _p1->getLat()) / (_p2->getLng() - _p1->getLng());
+		if (k1 == k2)
+		{
+			return false;
+		}
+	}
+	//准则2，p4和p3在边p1p2的两侧
+	{
+		double k = (_p2->getLng() - _p1->getLng())
+				 / (_p2->getLat() - _p1->getLat());
+		double b = _p1->getLng() - k*_p1->getLat();
+		double r3 = k*_p3->getLat() - _p3->getLng() + b;
+		double r4 = k*_p4->getLat() - _p4->getLng() + b;
+		if (r3*r4 > 0)
+		{
+			return false;
+		}
+
+	}
+	//准则3，p4和p1,p2所成边使用次数小于2
+	{
+		bool p1_4 = false, p2_4 = false;
+		Node* pMove_n = _p1->getEdgeList().front();
+		while (pMove_n)
+		{
+			TIN_Edge * pMove = dynamic_cast<TIN_Edge*>(pMove_n);
+			if (pMove->getPointer() == _p4&&pMove->nCount >= 2)
+			{
+				p1_4 = true;
+				break;
+			}
+			pMove_n = pMove_n->next;
+		}
+		Node* pMove_n = _p2->getEdgeList().front();
+		while (pMove_n)
+		{
+			TIN_Edge * pMove = dynamic_cast<TIN_Edge*>(pMove_n);
+			if (pMove->getPointer() == _p4&&pMove->nCount >= 2)
+			{
+				p2_4 = true;
+				break;
+			}
+			pMove_n = pMove_n->next;
+		}
+		if (p1_4 || p2_4)
+		{
+			return false;
+		}
+	}
+	//准则4，角p1p4p2最大(在buildTIN函数中遍历实现）
+	return true;
+}
+
 void TIN_Graph::sortPointList()
 {
 	lPoint.sort();
@@ -154,9 +212,23 @@ void TIN_Graph::initTri()
 	Triangle * pTri = new Triangle(nTri, p1, p2, p3);
 	lTriangle.push_back(pTri);
 
+}
+
+void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
+{
+	//Node * pMove_n = _p1->getEdgeList().front();
+	//while (pMove_n)//遍历_p1边表，找到边_p1_p2，判断该边使用次数
+	//{
+	//	TIN_Edge * pMove = dynamic_cast<TIN_Edge*>(pMove_n);
+	//	if (pMove->getPointer() == _p2)
+	//	{
+	//		if (pMove->nCount >= 2)return;
+	//		else break;
+	//	}
+	//	pMove_n = pMove_n->next;
+	//}
 
 
-	
 
 }
 

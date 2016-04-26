@@ -13,7 +13,7 @@ public:
 
 
 
-	bool isEmpty() { return (head == NULL ? true : false); }
+	
 
 	void pop_front()
 	{
