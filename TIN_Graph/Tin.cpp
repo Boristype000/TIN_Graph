@@ -1,5 +1,6 @@
 #include "Tin.h"
 #include <cmath>
+#include<cassert>
 using namespace std;
 
 #define EARTH_RADIUS 6378.137
@@ -62,7 +63,6 @@ double getCos3Pts(TIN_Point *p1, TIN_Point *p2, TIN_Point *p3)
 	return co2;
 }
 
-
 Triangle::Triangle(TIN_Point *_point1, TIN_Point *_point2, TIN_Point *_point3)
 {
 	id = -1;
@@ -75,7 +75,11 @@ Triangle::~Triangle()
 {
 	for (int i = 0; i < 3; i++)
 	{
-		delete pVertexT[i];
+		if (pVertexT[i] != NULL)
+		{
+			delete pVertexT[i];
+			pVertexT[i] = NULL;
+		}
 	}
 }
 
@@ -93,6 +97,9 @@ double Triangle::getArea()
 
 void Triangle::printData()
 {
+	cout << "Point1(" << pVertexT[0]->getLat() << "," << pVertexT[0]->getLng() << ") "
+		<< "Point2(" << pVertexT[1]->getLat() << "," << pVertexT[1]->getLng() << ") "
+		"Point3(" << pVertexT[2]->getLat() << "," << pVertexT[2]->getLng() << ")" << endl;
 }
 
 bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Point *_p4)
@@ -126,18 +133,18 @@ bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Poi
 		while (pMove_n)
 		{
 			TIN_Edge * pMove = dynamic_cast<TIN_Edge*>(pMove_n);
-			if (pMove->getPointer() == _p4&&pMove->nCount >= 2)
+			if (pMove->getPoint() == _p4&&pMove->nCount >= 2)
 			{
 				p1_4 = true;
 				break;
 			}
 			pMove_n = pMove_n->next;
 		}
-		Node* pMove_n = _p2->getEdgeList().front();
+		pMove_n = _p2->getEdgeList().front();
 		while (pMove_n)
 		{
 			TIN_Edge * pMove = dynamic_cast<TIN_Edge*>(pMove_n);
-			if (pMove->getPointer() == _p4&&pMove->nCount >= 2)
+			if (pMove->getPoint() == _p4&&pMove->nCount >= 2)
 			{
 				p2_4 = true;
 				break;
@@ -155,34 +162,17 @@ bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Poi
 
 TIN_Edge * TIN_Graph::findEdge(TIN_Point * pSource, TIN_Point * _pPoint)
 {
-	Node *pMove_n = pSource->getEdgeList().front();
-	TIN_Edge* pMove = dynamic_cast<TIN_Edge*>(pMove_n);
-	while (pMove_n->next != NULL && pMove->getPointer() != _pPoint)
+	Node* pMove_n = pSource->getEdgeList().front();
+	while (pMove_n)
 	{
-		pMove_n = pMove_n->next;
 		TIN_Edge* pMove = dynamic_cast<TIN_Edge*>(pMove_n);
+		if (pMove->getPoint() == _pPoint)
+		{
+			return pMove;
+		}
+		pMove_n = pMove_n->next;
 	}
-	if (pMove->getPointer() == _pPoint)
-	{
-		return pMove;
-	}
-	else
-	{
-		return NULL;
-	}
-	/*while (pMove->next != NULL && pMove!= )
-	{
-	pMove = pMove->next;
-	}
-	if (pMove->getID() == _id)
-	{
-	return pMove;
-
-	}
-	else
-	{
 	return NULL;
-	}*/
 }
 
 void TIN_Graph::addPoint2Edge(TIN_Point *_p1, TIN_Point *_p2)
@@ -245,6 +235,8 @@ void TIN_Graph::initTri()
 		}
 		pMove_n = pMove_n->next;
 	}
+
+	assert(p3 != NULL);
 	//初始化三个边，并将它们push进三个点的边表中。
 	//是否需要id值？
 	TIN_Edge *s1 = new TIN_Edge(p1, 1);
@@ -268,21 +260,11 @@ void TIN_Graph::initTri()
 
 }
 
-void TIN_Graph::triExpand(int _triID)
+void TIN_Graph::triExpand(Triangle * _pTri)
 {
-	Node * pMove_n = lTriangle.front();
-	Triangle* pMove = NULL;
-	while (pMove_n)
-	{
-		pMove = dynamic_cast<Triangle*>(pMove_n);
-		if (pMove->getID() == _triID)
-		{
-			break;
-		}
-		pMove_n = pMove_n->next;
-	}
+	
 	TIN_Point* p1, *p2, *p3;
-	pMove->getVertex(p1, p2, p3);
+	_pTri->getVertex(p1, p2, p3);
 	edgeExpand(p2, p3, p1);
 	edgeExpand(p3, p1, p2);
 }
@@ -362,7 +344,37 @@ void TIN_Graph::buildTIN()
 		return;
 	}
 	initTri();
+	Node * pMove_n = lTriangle.front();
+	while (pMove_n)
+	{
+		Triangle* pMove = dynamic_cast<Triangle*>(pMove_n);
+		triExpand(pMove);
+		pMove_n = pMove_n->next;
+	}
 
+
+}
+
+void TIN_Graph::printTri()
+{
+	Node *pMove_n = lTriangle.front();
+	while (pMove_n)
+	{
+		Triangle *pMove = dynamic_cast<Triangle*>(pMove_n);
+		pMove->printData();
+		pMove_n = pMove_n->next;
+	}
+}
+
+void TIN_Graph::printPoint()
+{
+	Node *pMove_n = lPoint.front();
+	while (pMove_n)
+	{
+		TIN_Point *pMove = dynamic_cast<TIN_Point*>(pMove_n);
+		pMove->printData();
+		pMove_n = pMove_n->next;
+	}
 }
 
 TIN_Point::TIN_Point(int _id, double _x, double _y)

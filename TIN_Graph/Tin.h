@@ -57,7 +57,7 @@ private:
 
 public:
 	short nCount;//同一条边最多被使用两次
-	const TIN_Point* getPointer()
+	const TIN_Point* getPoint()
 	{
 		return pPoint;
 	}
@@ -71,7 +71,11 @@ public:
 	}
 	~TIN_Edge()
 	{
-		delete pPoint;
+		if (pPoint != NULL)
+		{
+			delete pPoint;
+		}
+		pPoint = NULL;
 	}
 };
 
@@ -103,7 +107,7 @@ private:
 	void addPoint2Edge(TIN_Point *p1,TIN_Point *p2);
 	void sortPointList();//用来使点集按到右下角距离排序的函数
 	void initTri();//创建第一个三角形
-	void triExpand(int _triID);//三角形拓展函数，传入参数为三角形号
+	void triExpand(Triangle *);//三角形拓展函数，传入参数为三角形号
 	void edgeExpand(TIN_Point*, TIN_Point*, TIN_Point*);//边拓展函数，p1p2待扩展
 
 
@@ -117,4 +121,7 @@ public:
 
 	void insertPoint(TIN_Point * _Point);
 	void buildTIN();
+
+	void printTri();
+	void printPoint();
 };

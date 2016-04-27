@@ -48,7 +48,7 @@ int main()
 	int tID;
 	double tX, tY;
 	TIN_Graph testGraph;
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		cin >> tID >> tX >> tY;
 		TIN_Point * temp = new TIN_Point(tID, tX, tY);
@@ -56,6 +56,14 @@ int main()
 	}
 	testGraph.buildTIN();
 
+	cout << endl;
+
+	testGraph.printPoint();
+
+	cout << endl;
+
+	cout << testGraph.nTri;
+	testGraph.printTri();
 
 	system("pause");
 	return 0;

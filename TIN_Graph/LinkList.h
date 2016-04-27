@@ -87,7 +87,6 @@ protected:
 		return mergeSortedList(pLeft, pRight);
 		//把递归返回的两个排好序的链表进行组合
 	}
-	//Node* half_search(int _id, Node*, Node*, Node*);
 
 public:
 	myList() { head = NULL; tail = NULL; size = 0; }
@@ -192,23 +191,4 @@ public:
 		}
 	}
 
-	/*Node* find(int _id)
-	{
-		Node *pMove = head;
-		while (pMove->next != NULL && pMove->getID() != _id)
-		{
-			pMove = pMove->next;
-		}
-		if (pMove->getID() == _id)
-		{
-			return pMove;
-
-		}
-		else
-		{
-			return NULL;
-		}
-	}*/
-
-	//Node* search_half(int, Node*);
 };
