@@ -96,9 +96,9 @@ double Triangle::getArea()
 
 void Triangle::printData()
 {
-	cout << "Point1(" << pVertexT[0]->getLat() << "," << pVertexT[0]->getLng() << ") "
-		<< "Point2(" << pVertexT[1]->getLat() << "," << pVertexT[1]->getLng() << ") "
-		"Point3(" << pVertexT[2]->getLat() << "," << pVertexT[2]->getLng() << ")" << endl;
+	cout << "Point1(" << pVertexT[0]->getLat() << "," << pVertexT[0]->getLng() << ")"<<"["<<pVertexT[0]->getID()<<"] "
+		<< "Point2(" << pVertexT[1]->getLat() << "," << pVertexT[1]->getLng() << ")"<<"[" << pVertexT[1]->getID() << "] "
+		"Point3(" << pVertexT[2]->getLat() << "," << pVertexT[2]->getLng() << ")" <<"[" << pVertexT[2]->getID() << "] " << endl;
 }
 
 bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Point *_p4)
@@ -182,23 +182,38 @@ void TIN_Graph::addPoint2EdgeList(TIN_Point *_p1, TIN_Point *_p2)
 		TIN_Edge *pInsert = new TIN_Edge(_p2, 1);
 		_p1->getEdgeList().push_back(pInsert); 
 	}
+
+	Node *pMove_n = _p1->getEdgeList().front();
+	while (pMove_n)
+	{
+		TIN_Edge* pMove = dynamic_cast<TIN_Edge*>(pMove_n);
+		if (pMove->nCount != 2)
+		{
+			return;
+		}
+		else
+		{
+			pMove_n = pMove_n->next;
+		}
+	}
+	_p1->isClose = true;
 }
 
 void TIN_Graph::sortPointList()
 {
-	lPoint.sort();
+	plPoint.sort();
 }
 
 void TIN_Graph::initTri()
 {
 	sortPointList();
 	//另离左下角最近的点，即点链表头为p1
-	TIN_Point * p1 = dynamic_cast<TIN_Point*>(lPoint.front());
+	TIN_Point * p1 = dynamic_cast<TIN_Point*>(plPoint.front());
 	//使用dynamic_cast转换指针
 
 
 	//下面遍历点链表，求得p2;
-	Node * pMove_n = lPoint.front()->next;
+	Node * pMove_n = plPoint.front()->next;
 	TIN_Point * p2 = NULL;
 	double dMin = INF;
 	while (pMove_n != NULL)
@@ -213,7 +228,7 @@ void TIN_Graph::initTri()
 	}
 
 	//找到p3,根据角p1p3p2最大，也就是该角余弦值最小
-	pMove_n = lPoint.front()->next;
+	pMove_n = plPoint.front()->next;
 	TIN_Point *p3 = NULL;
 	double dCosMin = 1.0;
 	while (pMove_n != NULL)
@@ -288,12 +303,16 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 	//	}
 	//	pMove_n = pMove_n->next;
 	//}
-	Node *pMove_n = lPoint.front();
+	Node *pMove_n = plPoint.front();
 	double dCosMin = 1.0;
 	TIN_Point * _p4 = NULL;
 	while (pMove_n)
 	{
 		TIN_Point * pMove = dynamic_cast<TIN_Point*>(pMove_n);
+		if (pMove->isClose)
+		{
+			pMove_n = pMove_n->next;
+		}
 		if (pMove == _p1 || pMove == _p2 || pMove == _p3)
 		{
 			pMove_n = pMove_n->next; continue;
@@ -338,7 +357,8 @@ TIN_Graph::~TIN_Graph()
 
 void TIN_Graph::insertPoint(TIN_Point * _Point)
 {
-	lPoint.push_back(_Point);
+	plPoint.push_back(_Point);
+	//lPoint.push_back(_Point);
 	nPoint++;//暂时认为没有坐标重复的点
 }
 
@@ -374,7 +394,7 @@ void TIN_Graph::printTri()
 
 void TIN_Graph::printPoint()
 {
-	Node *pMove_n = lPoint.front();
+	Node *pMove_n = plPoint.front();
 	while (pMove_n)
 	{
 		TIN_Point *pMove = dynamic_cast<TIN_Point*>(pMove_n);
@@ -385,7 +405,7 @@ void TIN_Graph::printPoint()
 
 void TIN_Graph::printEdgeCount()
 {
-	Node *pMove_n = lPoint.front();
+	Node *pMove_n = plPoint.front();
 	while (pMove_n)
 	{
 		TIN_Point * pMove = dynamic_cast<TIN_Point*>(pMove_n);
@@ -410,4 +430,5 @@ TIN_Point::TIN_Point(double _x, double _y)
 	lat = _x;
 	lng = _y;
 	lcDistance = getPtsDist(0, 0, lat, lng);
+	isClose = false;
 }

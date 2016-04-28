@@ -26,10 +26,7 @@ protected:
 				pDel = NULL;
 			}
 		}
-		else
-		{
-			return;
-		}
+
 	}
 	Node* mergeSortedList(Node* pLeft, Node * pRight)
 	{

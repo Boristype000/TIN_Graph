@@ -8,9 +8,10 @@ class TIN_Point :public Node
 {
 private:
 	double lat, lng;//每个点的坐标值
-	myList edgeList;//边表指针
+	myList edgeList;//边表
 
 public:
+	bool isClose;
 	double lcDistance;//距离左下角的距离
 	short nSingleEdgeCount;//单边计数
 
@@ -18,6 +19,7 @@ public:
 		:lat(0), lng(0), lcDistance(0)
 	{
 		nSingleEdgeCount = -1;
+		isClose = false;
 	}
 	TIN_Point(double _x, double _y);
 	~TIN_Point() {}
@@ -96,7 +98,8 @@ public:
 class TIN_Graph
 {
 private:
-	myList lPoint;//点集
+	myList plPoint;//点集
+	//myList lPoint;
 	//myList lEdge;//边集
 	myList lTriangle;//三角集
 	bool * visited;//访问数组，在最短路算法中发挥作用
