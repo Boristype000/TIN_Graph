@@ -19,7 +19,7 @@ public:
 	{
 		nSingleEdgeCount = -1;
 	}
-	TIN_Point(int _id, double _x, double _y);
+	TIN_Point(double _x, double _y);
 	~TIN_Point() {}
 
 
@@ -57,7 +57,7 @@ private:
 
 public:
 	short nCount;//同一条边最多被使用两次
-	const TIN_Point* getPoint()
+	TIN_Point* getPoint()
 	{
 		return pPoint;
 	}
@@ -104,7 +104,7 @@ private:
 	bool Delaunay(TIN_Point *, TIN_Point *, TIN_Point *, TIN_Point *);
 		//用于判断四点是否满足Delaunay准则
 	TIN_Edge * findEdge(TIN_Point * pSource, TIN_Point * _pPoint);
-	void addPoint2Edge(TIN_Point *p1,TIN_Point *p2);
+	void addPoint2EdgeList(TIN_Point *p1,TIN_Point *p2);
 	void sortPointList();//用来使点集按到右下角距离排序的函数
 	void initTri();//创建第一个三角形
 	void triExpand(Triangle *);//三角形拓展函数，传入参数为三角形号
@@ -124,4 +124,5 @@ public:
 
 	void printTri();
 	void printPoint();
+	void printEdgeCount();
 };

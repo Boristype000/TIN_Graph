@@ -45,13 +45,12 @@ int main()
 	cout << endl;
 	tQueue.pop_front();
 	tQueue.output();*/
-	int tID;
 	double tX, tY;
 	TIN_Graph testGraph;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 7; i++)
 	{
-		cin >> tID >> tX >> tY;
-		TIN_Point * temp = new TIN_Point(tID, tX, tY);
+		cin >> tX >> tY;
+		TIN_Point * temp = new TIN_Point(tX, tY);
 		testGraph.insertPoint(temp);
 	}
 	testGraph.buildTIN();
@@ -62,8 +61,13 @@ int main()
 
 	cout << endl;
 
-	cout << testGraph.nTri;
 	testGraph.printTri();
+
+	cout << testGraph.nTri;
+
+	cout << endl<<endl;
+
+	testGraph.printEdgeCount();
 
 	system("pause");
 	return 0;
