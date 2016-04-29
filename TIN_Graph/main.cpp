@@ -4,7 +4,7 @@
 #include"Queue.h"
 using namespace std;
 
-int main()
+int main() 
 {
 	//myList testList;
 	//int temp = 0;
@@ -47,7 +47,7 @@ int main()
 	tQueue.output();*/
 	double tX, tY;
 	TIN_Graph testGraph;
-	for (int i = 0; i < 30; i++)
+	for (int i = 0; i < 210; i++)
 	{
 		cin >> tX >> tY;
 		TIN_Point * temp = new TIN_Point(tX, tY);
@@ -61,13 +61,15 @@ int main()
 
 	cout << endl;
 
-	testGraph.printTri();
+	//testGraph.printTri();
 
 	cout << testGraph.nTri;
 
 	cout << endl<<endl;
 
-	testGraph.printEdgeCount();
+	//testGraph.printEdgeCount();
+
+
 
 	system("pause");
 	return 0;

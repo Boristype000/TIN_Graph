@@ -39,8 +39,8 @@ double getPtsDist(double lat1, double lng1, double lat2, double lng2)
 double getPtsDist_s(TIN_Point *Point1,TIN_Point *Point2)
 {
 	double radLat1 = rad(Point1->getLat());
-	double radLat2 = rad(Point1->getLng());
-	double radLon1 = rad(Point2->getLat());
+	double radLat2 = rad(Point2->getLat());
+	double radLon1 = rad(Point1->getLng());
 	double radLon2 = rad(Point2->getLng());
 	double a = radLat1 - radLat2;
 	double b = radLon1 - radLon2;
@@ -49,7 +49,13 @@ double getPtsDist_s(TIN_Point *Point1,TIN_Point *Point2)
 	s = s * EARTH_RADIUS;
 
 	return s;
+
+	/*double dY = Point1->getLng() - Point2->getLng();
+	double dX = Point1->getLat() - Point2->getLat();
+	double s = sqrt(pow(dY, 2) + pow(dX, 2));
+	return s;*/
 }
+
 
 double getCos3Pts(TIN_Point *p1, TIN_Point *p2, TIN_Point *p3)
 //获得p2角度的cos值
@@ -239,18 +245,13 @@ void TIN_Graph::initTri()
 			pMove_n = pMove_n->next;
 			continue;
 		}
-		if (getCos3Pts(p1, pMove, p2) < dCosMin)
+		if (getCos3Pts(p1, pMove, p2) <= dCosMin)
 		{
 			dCosMin = getCos3Pts(p1, pMove, p2);
 			p3 = pMove;
 		}
 		pMove_n = pMove_n->next;
 	}
-
-	assert(p3 != NULL);
-	//初始化三个边，并将它们push进三个点的边表中。
-	//是否需要id值？
-
 	addPoint2EdgeList(p1, p2);
 	addPoint2EdgeList(p2, p1);
 	addPoint2EdgeList(p1, p3);
@@ -258,27 +259,12 @@ void TIN_Graph::initTri()
 	addPoint2EdgeList(p2, p3);
 	addPoint2EdgeList(p3, p2);
 
-
-	//TIN_Edge *s1 = new TIN_Edge(p1, 1);
-	//TIN_Edge *s2 = new TIN_Edge(p2, 1);
-	//TIN_Edge *s3 = new TIN_Edge(p3, 1);
-	//s1->nCount = 1;
-	//s2->nCount = 1;
-	//s3->nCount = 1;
-	//p1->getEdgeList().push_back(s2);
-	//p1->getEdgeList().push_back(s3);
-	//p2->getEdgeList().push_back(s1);
-	//p2->getEdgeList().push_back(s3);
-	//p3->getEdgeList().push_back(s1);
-	//p3->getEdgeList().push_back(s2);
 	//将三角形push进三角集中
 	Triangle * pTri = new Triangle(p1, p2, p3);
 	lTriangle.push_back(pTri);
 	nTri++;
 
 	edgeExpand(p1, p2, p3);
-
-
 }
 
 void TIN_Graph::triExpand(Triangle * _pTri)
@@ -292,19 +278,6 @@ void TIN_Graph::triExpand(Triangle * _pTri)
 
 void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 {
-	//Node * pMove_n = _p1->getEdgeList().front();
-	//while (pMove_n)//遍历_p1边表，找到边_p1_p2，判断该边使用次数
-	//{
-	//	TIN_Edge * pMove = dynamic_cast<TIN_Edge*>(pMove_n);
-	//	if (pMove->getPointer() == _p2)
-	//	{
-	//		if (pMove->nCount >= 2)return;
-	//		else break;
-	//	}
-	//	pMove_n = pMove_n->next;
-	//}
-
-	
 	TIN_Edge* pR = findEdge(_p1, _p2);
 	if (pR->nCount >= 2)return;
 
@@ -322,7 +295,7 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 		}
 		if (Delaunay(_p1, _p2, _p3, pMove))
 		{
-			if (getCos3Pts(_p1, pMove, _p2) < dCosMin)
+			if (getCos3Pts(_p1, pMove, _p2) <= dCosMin)
 			{
 				_p4 = pMove;
 				dCosMin = getCos3Pts(_p1, _p4, _p2);
@@ -342,8 +315,6 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 	addPoint2EdgeList(_p2, _p4);
 	addPoint2EdgeList(_p4, _p1);
 	addPoint2EdgeList(_p4, _p2);
-
-	//还没有优化
 
 }
 
