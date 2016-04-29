@@ -303,6 +303,7 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 	//	}
 	//	pMove_n = pMove_n->next;
 	//}
+
 	
 	TIN_Edge* pR = findEdge(_p1, _p2);
 	if (pR->nCount >= 2)return;
@@ -321,8 +322,11 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 		}
 		if (Delaunay(_p1, _p2, _p3, pMove))
 		{
-			_p4 = pMove;
-			dCosMin = getCos3Pts(_p1, _p4, _p2);
+			if (getCos3Pts(_p1, pMove, _p2) < dCosMin)
+			{
+				_p4 = pMove;
+				dCosMin = getCos3Pts(_p1, _p4, _p2);
+			}
 		}
 		pMove_n = pMove_n->next;
 	}

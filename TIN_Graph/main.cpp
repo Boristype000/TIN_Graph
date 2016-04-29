@@ -47,7 +47,7 @@ int main()
 	tQueue.output();*/
 	double tX, tY;
 	TIN_Graph testGraph;
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 30; i++)
 	{
 		cin >> tX >> tY;
 		TIN_Point * temp = new TIN_Point(tX, tY);
