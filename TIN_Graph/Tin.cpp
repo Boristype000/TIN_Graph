@@ -212,7 +212,7 @@ void TIN_Graph::sortPointList()
 
 void TIN_Graph::initTri()
 {
-	sortPointList();
+	//sortPointList();
 	//另离左下角最近的点，即点链表头为p1
 	TIN_Point * p1 = dynamic_cast<TIN_Point*>(plPoint.front());
 	//使用dynamic_cast转换指针
