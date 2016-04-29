@@ -303,17 +303,19 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 	//	}
 	//	pMove_n = pMove_n->next;
 	//}
+	
+	TIN_Edge* pR = findEdge(_p1, _p2);
+	if (pR->nCount >= 2)return;
+
+
 	Node *pMove_n = plPoint.front();
 	double dCosMin = 1.0;
 	TIN_Point * _p4 = NULL;
 	while (pMove_n)
 	{
 		TIN_Point * pMove = dynamic_cast<TIN_Point*>(pMove_n);
-		if (pMove->isClose)
-		{
-			pMove_n = pMove_n->next;
-		}
-		if (pMove == _p1 || pMove == _p2 || pMove == _p3)
+
+		if (pMove == _p1 || pMove == _p2 || pMove == _p3 || pMove->isClose)
 		{
 			pMove_n = pMove_n->next; continue;
 		}
@@ -413,7 +415,7 @@ void TIN_Graph::printEdgeCount()
 		while (pMove_ef)
 		{
 			TIN_Edge* pMove_e = dynamic_cast<TIN_Edge*>(pMove_ef);
-			if (pMove_e->nCount > 2)
+			if (pMove_e->nCount)
 			{
 				cout << "(" << pMove->getID() << " -- ";
 				cout << pMove_e->getPoint()->getID() << ")" << "[" << pMove_e->nCount << "] ";
