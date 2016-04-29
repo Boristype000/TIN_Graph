@@ -45,9 +45,12 @@ int main()
 	cout << endl;
 	tQueue.pop_front();
 	tQueue.output();*/
+	int n;
+	cin >> n;
+
 	double tX, tY;
 	TIN_Graph testGraph;
-	for (int i = 0; i < 210; i++)
+	for (int i = 0; i < n; i++)
 	{
 		cin >> tX >> tY;
 		TIN_Point * temp = new TIN_Point(tX, tY);
