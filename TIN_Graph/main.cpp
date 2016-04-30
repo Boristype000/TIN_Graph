@@ -72,6 +72,7 @@ int main()
 
 	//testGraph.printEdgeCount();
 
+	testGraph.printUnUsedPoint();
 
 
 	system("pause");

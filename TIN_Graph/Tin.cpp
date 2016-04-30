@@ -113,7 +113,7 @@ bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Poi
 	{
 		double k1 = (_p4->getLat() - _p1->getLat()) / (_p4->getLng() - _p1->getLng());
 		double k2 = (_p2->getLat() - _p1->getLat()) / (_p2->getLng() - _p1->getLng());
-		if (k1 == k2)
+		if (!(k1- k2))
 		{
 			return false;
 		}
@@ -133,40 +133,26 @@ bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Poi
 	}
 	//准则3，p4和p1,p2所成边使用次数小于2
 	{
-		Node* pMove_n1 = _p1->getEdgeList().front();
-		while (pMove_n1)
+		TIN_Edge *S14 = findEdge(_p1, _p4->getID());
+		TIN_Edge *S24 = findEdge(_p1, _p4->getID());
+		if ((S14&&S14->nCount >= 2) || (S24&&S24->nCount >= 2))
 		{
-			TIN_Edge * pMove = dynamic_cast<TIN_Edge*>(pMove_n1);
-			if (pMove->getPoint() == _p4&&pMove->nCount >= 2)
-			{
-				return false;
-			}
-			pMove_n1 = pMove_n1->next;
+			return false;
 		}
-
-		Node *pMove_n2 = _p2->getEdgeList().front();
-		while (pMove_n2)
-		{
-			TIN_Edge * pMove = dynamic_cast<TIN_Edge*>(pMove_n2);
-			if (pMove->getPoint() == _p4&&pMove->nCount >= 2)
-			{
-				return false;
-			}
-			pMove_n2 = pMove_n2->next;
-		}
+	
 	}
 	//准则4，角p1p4p2最大(在buildTIN函数中遍历实现）
 	return true;
 }
 
-TIN_Edge * TIN_Graph::findEdge(TIN_Point * pSource, TIN_Point * _pFind)
+TIN_Edge * TIN_Graph::findEdge(TIN_Point * pSource, int _id)
 //在pSource指向的点的边表中找到另一点为pFind的边，并返回该边
 {
 	Node* pMove_n = pSource->getEdgeList().front();
 	while (pMove_n)
 	{
 		TIN_Edge* pMove = dynamic_cast<TIN_Edge*>(pMove_n);
-		if (pMove->getPoint() == _pFind)
+		if (pMove->getPoint()->getID() == _id)
 		{
 			return pMove;
 		}
@@ -176,16 +162,16 @@ TIN_Edge * TIN_Graph::findEdge(TIN_Point * pSource, TIN_Point * _pFind)
 }
 
 void TIN_Graph::addPoint2EdgeList(TIN_Point *_p1, TIN_Point *_p2)
-//将p2点加进p1的边表中
+//将p2p1边加进p1的边表中
 {
-	TIN_Edge* edge1 = findEdge(_p1, _p2);
+	TIN_Edge* edge1 = findEdge(_p1, _p2->getID());
 	if (edge1 != NULL)
 	{
-		edge1->nCount++; return;
+		edge1->nCount++; //!!
 	}
 	else
 	{
-		TIN_Edge *pInsert = new TIN_Edge(_p2, 1);
+		TIN_Edge *pInsert = new TIN_Edge(_p2);
 		_p1->getEdgeList().push_back(pInsert); 
 	}
 
@@ -193,16 +179,16 @@ void TIN_Graph::addPoint2EdgeList(TIN_Point *_p1, TIN_Point *_p2)
 	while (pMove_n)
 	{
 		TIN_Edge* pMove = dynamic_cast<TIN_Edge*>(pMove_n);
-		if (pMove->nCount != 2)
-		{
-			return;
-		}
-		else
+		if (pMove->nCount == 2)
 		{
 			pMove_n = pMove_n->next;
 		}
+		else
+		{
+			return;
+		}
 	}
-	_p1->isClose = true;
+	_p1->Closeit();
 }
 
 void TIN_Graph::sortPointList()
@@ -212,7 +198,7 @@ void TIN_Graph::sortPointList()
 
 void TIN_Graph::initTri()
 {
-	//sortPointList();
+	sortPointList();
 	//另离左下角最近的点，即点链表头为p1
 	TIN_Point * p1 = dynamic_cast<TIN_Point*>(plPoint.front());
 	//使用dynamic_cast转换指针
@@ -278,7 +264,7 @@ void TIN_Graph::triExpand(Triangle * _pTri)
 
 void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 {
-	TIN_Edge* pR = findEdge(_p1, _p2);
+	TIN_Edge* pR = findEdge(_p1, _p2->getID());
 	if (pR->nCount >= 2)return;
 
 
@@ -289,13 +275,13 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 	{
 		TIN_Point * pMove = dynamic_cast<TIN_Point*>(pMove_n);
 
-		if (pMove == _p1 || pMove == _p2 || pMove == _p3 || pMove->isClose)
+		if (pMove == _p1 || pMove == _p2 || pMove == _p3 || pMove->isClose())
 		{
 			pMove_n = pMove_n->next; continue;
 		}
 		if (Delaunay(_p1, _p2, _p3, pMove))
 		{
-			if (getCos3Pts(_p1, pMove, _p2) <= dCosMin)
+			if (getCos3Pts(_p1, pMove, _p2) < dCosMin)
 			{
 				_p4 = pMove;
 				dCosMin = getCos3Pts(_p1, _p4, _p2);
@@ -326,8 +312,17 @@ TIN_Graph::TIN_Graph()
 
 TIN_Graph::~TIN_Graph()
 {
-	delete[] visited;
-	delete[] dist;
+	if (visited != NULL)
+	{
+		delete[] visited;
+		visited = NULL;
+	}
+	if (dist != NULL)
+	{
+		delete[] dist;
+
+		dist = NULL;
+	}
 	nPoint = 0;
 	nTri = 0;
 }
@@ -402,10 +397,24 @@ void TIN_Graph::printEdgeCount()
 	}
 }
 
+void TIN_Graph::printUnUsedPoint()
+{
+	Node * pMove_n = plPoint.front();
+	while (pMove_n)
+	{
+		TIN_Point * pMove = dynamic_cast<TIN_Point*>(pMove_n);
+		if (pMove->getEdgeList().isEmpty())
+		{
+			cout << pMove->getID() << " ";
+		}
+		pMove_n = pMove_n->next;
+	}
+}
+
 TIN_Point::TIN_Point(double _x, double _y)
 {
 	lat = _x;
 	lng = _y;
 	lcDistance = getPtsDist(0, 0, lat, lng);
-	isClose = false;
+	Closed = false;
 }

@@ -9,31 +9,30 @@ class TIN_Point :public Node
 private:
 	double lat, lng;//每个点的坐标值
 	myList edgeList;//边表
+	bool Closed;//是否为闭合点的标志
+
 
 public:
-	bool isClose;
 	double lcDistance;//距离左下角的距离
-	short nSingleEdgeCount;//单边计数
 
 	TIN_Point()
 		:lat(0), lng(0), lcDistance(0)
 	{
-		nSingleEdgeCount = -1;
-		isClose = false;
+		Closed = false;
 	}
 	TIN_Point(double _x, double _y);
 	~TIN_Point() {}
 
 
-	int getID() { return id; }
+	const int &getID() { return id; }
 	void setID(int _id) { id = _id; }
 
 
-	double getLat() 
+	const double &getLat() 
 	{
 		return lat;
 	}
-	double getLng ()
+	const double &getLng ()
 	{
 		return lng;
 	}
@@ -48,6 +47,19 @@ public:
 	void printData()
 	{
 		cout << id << " " << lat << " " << lng << endl;
+	}
+
+	const bool isClose()
+	{
+		if (Closed)
+		{
+			return true;
+		}
+		return false;
+	}
+	void Closeit()
+	{
+		Closed = true; return;
 	}
 };
 
@@ -67,9 +79,9 @@ public:
 	{
 		nCount = 0; pPoint = NULL;
 	}
-	TIN_Edge(TIN_Point *_Point, int nCO) 
+	TIN_Edge(TIN_Point *_Point) 
 	{
-		pPoint = _Point; nCount = nCO; 
+		pPoint = _Point; nCount = 1; 
 	}
 	~TIN_Edge()
 	{
@@ -106,7 +118,7 @@ private:
 
 	bool Delaunay(TIN_Point *, TIN_Point *, TIN_Point *, TIN_Point *);
 		//用于判断四点是否满足Delaunay准则
-	TIN_Edge * findEdge(TIN_Point * pSource, TIN_Point * _pPoint);
+	TIN_Edge * findEdge(TIN_Point * pSource, int findID);
 	void addPoint2EdgeList(TIN_Point *p1,TIN_Point *p2);
 	void sortPointList();//用来使点集按到右下角距离排序的函数
 	void initTri();//创建第一个三角形
@@ -128,4 +140,5 @@ public:
 	void printTri();
 	void printPoint();
 	void printEdgeCount();
+	void printUnUsedPoint();
 };
