@@ -64,7 +64,7 @@ int main()
 
 	cout << endl;
 
-	//testGraph.printTri();
+	testGraph.printTri();
 
 	cout << testGraph.nTri;
 
@@ -72,6 +72,7 @@ int main()
 
 	//testGraph.printEdgeCount();
 
+	//testGraph.printUnUsedPoint();
 
 
 	system("pause");
