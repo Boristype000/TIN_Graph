@@ -22,7 +22,7 @@ double rad(double d)
 * 返回值: double, 两个点之间的近似大地线距离，单位 km
 *******************************************************************/
 double getPtsDist(double lat1, double lng1, double lat2, double lng2)
- {
+{
 	double radLat1 = rad(lat1);
 	double radLat2 = rad(lat2);
 	double radLon1 = rad(lng1);
@@ -36,7 +36,7 @@ double getPtsDist(double lat1, double lng1, double lat2, double lng2)
 	return s;
 }
 
-double getPtsDist_s(TIN_Point *Point1,TIN_Point *Point2)
+double getPtsDist_s(TIN_Point *Point1, TIN_Point *Point2)
 {
 	double radLat1 = rad(Point1->getLat());
 	double radLat2 = rad(Point2->getLat());
@@ -97,11 +97,11 @@ double Triangle::getArea()
 void Triangle::printData()
 {
 	cout << "Point1(" << pVertexT[0]->getLat() << ","
-		<< pVertexT[0]->getLng() << ")"<<"["<<pVertexT[0]->getID()<<"] "
+		<< pVertexT[0]->getLng() << ")" << "[" << pVertexT[0]->getID() << "] "
 		<< "Point2(" << pVertexT[1]->getLat() << ","
-		<< pVertexT[1]->getLng() << ")"<<"[" << pVertexT[1]->getID() << "] "
-		"Point3(" << pVertexT[2]->getLat() << "," 
-		<< pVertexT[2]->getLng() << ")" <<"[" << pVertexT[2]->getID() << "] " 
+		<< pVertexT[1]->getLng() << ")" << "[" << pVertexT[1]->getID() << "] "
+		"Point3(" << pVertexT[2]->getLat() << ","
+		<< pVertexT[2]->getLng() << ")" << "[" << pVertexT[2]->getID() << "] "
 		<< endl;
 }
 
@@ -111,7 +111,7 @@ bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Poi
 	{
 		double k1 = (_p4->getLat() - _p1->getLat()) / (_p4->getLng() - _p1->getLng());
 		double k2 = (_p2->getLat() - _p1->getLat()) / (_p2->getLng() - _p1->getLng());
-		if (!(k1- k2))
+		if (!(k1 - k2))
 		{
 			return false;
 		}
@@ -119,7 +119,7 @@ bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Poi
 	//准则2，p4和p3在边p1p2的两侧
 	{
 		double k = (_p2->getLng() - _p1->getLng())
-				 / (_p2->getLat() - _p1->getLat());
+			/ (_p2->getLat() - _p1->getLat());
 		double b = _p1->getLng() - k*_p1->getLat();
 		double r3 = k*_p3->getLat() - _p3->getLng() + b;
 		double r4 = k*_p4->getLat() - _p4->getLng() + b;
@@ -137,7 +137,7 @@ bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Poi
 		{
 			return false;
 		}
-	
+
 	}
 	//准则4，角p1p4p2最大(在buildTIN函数中遍历实现）
 	return true;
@@ -169,8 +169,8 @@ void TIN_Graph::addPoint2EdgeList(TIN_Point *_p1, TIN_Point *_p2)
 	}
 	else
 	{
-		TIN_Edge *pInsert = new TIN_Edge(_p2);
-		_p1->getEdgeList().push_back(pInsert); 
+		TIN_Edge *pInsert = new TIN_Edge(_p1, _p2);
+		_p1->getEdgeList().push_back(pInsert);
 	}
 
 	Node *pMove_n = _p1->getEdgeList().front();
@@ -253,7 +253,7 @@ void TIN_Graph::initTri()
 
 void TIN_Graph::triExpand(Triangle * _pTri)
 {
-	
+
 	TIN_Point* p1, *p2, *p3;
 	_pTri->getVertex(p1, p2, p3);
 	edgeExpand(p2, p3, p1);
@@ -288,7 +288,7 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 		pMove_n = pMove_n->next;
 	}
 	if (_p4 == NULL)return;//如果p4仍为空指针，也就是并未找到可用的p4，直接返回
-	
+
 	Triangle * newTri = new Triangle(_p1, _p2, _p4);
 	lTriangle.push_back(newTri);
 	nTri++;
@@ -436,9 +436,12 @@ TIN_Edge::TIN_Edge()
 	nCount = 0; pPoint = NULL; length = -1;
 }
 
-TIN_Edge::TIN_Edge(TIN_Point * _Point)
+TIN_Edge::TIN_Edge(TIN_Point* _ori, TIN_Point * _Point)
 {
-	pPoint = _Point; nCount = 1;
+	oriPoint = _ori;
+	pPoint = _Point;
+	nCount = 1;
+	length = getPtsDist_s(oriPoint, pPoint);
 }
 
 TIN_Edge::~TIN_Edge()

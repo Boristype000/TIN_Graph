@@ -23,17 +23,15 @@ public:
 	TIN_Point(double _x, double _y);
 	~TIN_Point() {}
 
-
 	const int &getID() { return id; }
 	void setID(int _id) { id = _id; }
-
 
 	const double &getLat() { return lat; }
 	const double &getLng() { return lng; }
 
 	double sortSeed() { return lcDistance; }//排序种子函数，返回该派生类用于排序的依据
 
-	myList &getEdgeList(){	return edgeList;}
+	myList &getEdgeList() { return edgeList; }
 	void printData();
 
 	const bool &isClose();
@@ -43,6 +41,7 @@ public:
 class TIN_Edge :public Node
 {
 private:
+	TIN_Point *oriPoint;
 	TIN_Point *pPoint;//该边另一点的指针
 	double length;
 
@@ -53,7 +52,7 @@ public:
 		return pPoint;
 	}
 	TIN_Edge();
-	TIN_Edge(TIN_Point *_Point);
+	TIN_Edge(TIN_Point* _ori, TIN_Point *_Point);
 	~TIN_Edge();
 };
 
