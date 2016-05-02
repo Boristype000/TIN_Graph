@@ -64,7 +64,7 @@ int main()
 
 	cout << endl;
 
-	testGraph.printTri();
+	//testGraph.printTri();
 
 	cout << testGraph.nTri;
 

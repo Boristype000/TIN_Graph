@@ -28,46 +28,23 @@ public:
 	void setID(int _id) { id = _id; }
 
 
-	const double &getLat() 
-	{
-		return lat;
-	}
-	const double &getLng ()
-	{
-		return lng;
-	}
-	
-	double sortSeed()
-	{ return lcDistance; }//排序种子函数，返回该派生类用于排序的依据
+	const double &getLat() { return lat; }
+	const double &getLng() { return lng; }
 
-	myList &getEdgeList() 
-	{ 
-		return edgeList;
-	}
-	void printData()
-	{
-		cout << id << " " << lat << " " << lng << endl;
-	}
+	double sortSeed() { return lcDistance; }//排序种子函数，返回该派生类用于排序的依据
 
-	const bool isClose()
-	{
-		if (Closed)
-		{
-			return true;
-		}
-		return false;
-	}
-	void Closeit()
-	{
-		Closed = true; return;
-	}
+	myList &getEdgeList(){	return edgeList;}
+	void printData();
+
+	const bool &isClose();
+	void Closeit() { Closed = true; }
 };
 
 class TIN_Edge :public Node
 {
 private:
 	TIN_Point *pPoint;//该边另一点的指针
-
+	double length;
 
 public:
 	short nCount;//同一条边最多被使用两次
@@ -75,22 +52,9 @@ public:
 	{
 		return pPoint;
 	}
-	TIN_Edge() 
-	{
-		nCount = 0; pPoint = NULL;
-	}
-	TIN_Edge(TIN_Point *_Point) 
-	{
-		pPoint = _Point; nCount = 1; 
-	}
-	~TIN_Edge()
-	{
-		if (pPoint != NULL)
-		{
-			delete pPoint;
-		}
-		pPoint = NULL;
-	}
+	TIN_Edge();
+	TIN_Edge(TIN_Point *_Point);
+	~TIN_Edge();
 };
 
 class Triangle :public Node
@@ -111,15 +75,13 @@ class TIN_Graph
 {
 private:
 	myList plPoint;//点集
-	//myList lPoint;
-	//myList lEdge;//边集
 	myList lTriangle;//三角集
 	bool * visited;//访问数组，在最短路算法中发挥作用
 
 	bool Delaunay(TIN_Point *, TIN_Point *, TIN_Point *, TIN_Point *);
-		//用于判断四点是否满足Delaunay准则
+	//用于判断四点是否满足Delaunay准则
 	TIN_Edge * findEdge(TIN_Point * pSource, int findID);
-	void addPoint2EdgeList(TIN_Point *p1,TIN_Point *p2);
+	void addPoint2EdgeList(TIN_Point *p1, TIN_Point *p2);
 	void sortPointList();//用来使点集按到右下角距离排序的函数
 	void initTri();//创建第一个三角形
 	void triExpand(Triangle *);//三角形拓展函数，传入参数为三角形号

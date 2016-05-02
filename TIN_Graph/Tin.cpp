@@ -49,13 +49,7 @@ double getPtsDist_s(TIN_Point *Point1,TIN_Point *Point2)
 	s = s * EARTH_RADIUS;
 
 	return s;
-
-	/*double dY = Point1->getLng() - Point2->getLng();
-	double dX = Point1->getLat() - Point2->getLat();
-	double s = sqrt(pow(dY, 2) + pow(dX, 2));
-	return s;*/
 }
-
 
 double getCos3Pts(TIN_Point *p1, TIN_Point *p2, TIN_Point *p3)
 //获得p2角度的cos值
@@ -102,9 +96,13 @@ double Triangle::getArea()
 
 void Triangle::printData()
 {
-	cout << "Point1(" << pVertexT[0]->getLat() << "," << pVertexT[0]->getLng() << ")"<<"["<<pVertexT[0]->getID()<<"] "
-		<< "Point2(" << pVertexT[1]->getLat() << "," << pVertexT[1]->getLng() << ")"<<"[" << pVertexT[1]->getID() << "] "
-		"Point3(" << pVertexT[2]->getLat() << "," << pVertexT[2]->getLng() << ")" <<"[" << pVertexT[2]->getID() << "] " << endl;
+	cout << "Point1(" << pVertexT[0]->getLat() << ","
+		<< pVertexT[0]->getLng() << ")"<<"["<<pVertexT[0]->getID()<<"] "
+		<< "Point2(" << pVertexT[1]->getLat() << ","
+		<< pVertexT[1]->getLng() << ")"<<"[" << pVertexT[1]->getID() << "] "
+		"Point3(" << pVertexT[2]->getLat() << "," 
+		<< pVertexT[2]->getLng() << ")" <<"[" << pVertexT[2]->getID() << "] " 
+		<< endl;
 }
 
 bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Point *_p4)
@@ -198,7 +196,7 @@ void TIN_Graph::sortPointList()
 
 void TIN_Graph::initTri()
 {
-	sortPointList();
+	//sortPointList();
 	//另离左下角最近的点，即点链表头为p1
 	TIN_Point * p1 = dynamic_cast<TIN_Point*>(plPoint.front());
 	//使用dynamic_cast转换指针
@@ -417,4 +415,37 @@ TIN_Point::TIN_Point(double _x, double _y)
 	lng = _y;
 	lcDistance = getPtsDist(0, 0, lat, lng);
 	Closed = false;
+}
+
+void TIN_Point::printData()
+{
+	cout << id << " " << lat << " " << lng << endl;
+}
+
+const bool & TIN_Point::isClose()
+{
+	if (Closed)
+	{
+		return true;
+	}
+	return false;
+}
+
+TIN_Edge::TIN_Edge()
+{
+	nCount = 0; pPoint = NULL; length = -1;
+}
+
+TIN_Edge::TIN_Edge(TIN_Point * _Point)
+{
+	pPoint = _Point; nCount = 1;
+}
+
+TIN_Edge::~TIN_Edge()
+{
+	if (pPoint != NULL)
+	{
+		delete pPoint;
+	}
+	pPoint = NULL;
 }
