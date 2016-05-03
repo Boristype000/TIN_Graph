@@ -36,12 +36,12 @@ double getPtsDist(double lat1, double lng1, double lat2, double lng2)
 	return s;
 }
 
-double getPtsDist_s(TIN_Point *Point1, TIN_Point *Point2)
+double getPtsDist_s(TIN_Point *_p1, TIN_Point *_p2)
 {
-	double radLat1 = rad(Point1->getLat());
-	double radLat2 = rad(Point2->getLat());
-	double radLon1 = rad(Point1->getLng());
-	double radLon2 = rad(Point2->getLng());
+	double radLat1 = rad(_p1->getLat());
+	double radLat2 = rad(_p2->getLat());
+	double radLon1 = rad(_p1->getLng());
+	double radLon2 = rad(_p2->getLng());
 	double a = radLat1 - radLat2;
 	double b = radLon1 - radLon2;
 
@@ -63,11 +63,12 @@ double getCos3Pts(TIN_Point *p1, TIN_Point *p2, TIN_Point *p3)
 	return co2;
 }
 
-Triangle::Triangle(TIN_Point *_point1, TIN_Point *_point2, TIN_Point *_point3)
+Triangle::Triangle(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 {
-	pVertexT[0] = _point1;
-	pVertexT[1] = _point2;
-	pVertexT[2] = _point3;
+	pVertexT[0] = _p1;
+	pVertexT[1] = _p2;
+	pVertexT[2] = _p3;
+	nArea = calArea();
 }
 
 Triangle::~Triangle()
@@ -89,9 +90,13 @@ void Triangle::getVertex(TIN_Point *&_p1, TIN_Point *&_p2, TIN_Point *&_p3)
 	_p3 = pVertexT[2];
 }
 
-double Triangle::getArea()
+double Triangle::calArea()
 {
-	return 0.0;
+	TIN_Point *A = pVertexT[0], *B = pVertexT[1], *C = pVertexT[2];
+	double coA = getCos3Pts(B, A, C);
+	double siA = sin(acos(coA));
+	double square = 0.5*getPtsDist_s(A, B)*getPtsDist_s(A, C)*siA;
+	return square;
 }
 
 void Triangle::printData()

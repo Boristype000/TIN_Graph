@@ -60,7 +60,7 @@ int main()
 
 	cout << endl;
 
-	testGraph.printPoint();
+	//testGraph.printPoint();
 
 	cout << endl;
 

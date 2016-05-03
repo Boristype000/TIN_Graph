@@ -59,13 +59,14 @@ public:
 class Triangle :public Node
 {
 private:
+	double nArea;//该三角形面积
 	TIN_Point * pVertexT[3];//三角形顶点指针
+	double calArea();//计算每个三角形的面积
 public:
 	Triangle(TIN_Point*, TIN_Point*, TIN_Point*);
 	~Triangle();
-
+	double getArea() { return nArea; }
 	void getVertex(TIN_Point*&, TIN_Point*&, TIN_Point*&);
-	double getArea();//计算每个三角形的面积
 	void printData();
 };
 
