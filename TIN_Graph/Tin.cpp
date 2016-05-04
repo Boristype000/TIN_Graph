@@ -73,14 +73,14 @@ Triangle::Triangle(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 
 Triangle::~Triangle()
 {
-	for (int i = 0; i < 3; i++)
+	/*for (int i = 0; i < 3; i++)
 	{
 		if (pVertexT[i] != NULL)
 		{
 			delete pVertexT[i];
 			pVertexT[i] = NULL;
 		}
-	}
+	}*/
 }
 
 void Triangle::getVertex(TIN_Point *&_p1, TIN_Point *&_p2, TIN_Point *&_p3)
@@ -451,9 +451,9 @@ TIN_Edge::TIN_Edge(TIN_Point* _ori, TIN_Point * _Point)
 
 TIN_Edge::~TIN_Edge()
 {
-	if (pPoint != NULL)
+	/*if (pPoint != NULL)
 	{
 		delete pPoint;
 	}
-	pPoint = NULL;
+	pPoint = NULL;*/
 }

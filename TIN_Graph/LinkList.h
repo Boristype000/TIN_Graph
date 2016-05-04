@@ -18,7 +18,7 @@ protected:
 		if (head != NULL)
 		{
 			Node* pMove = head;
-			while (pMove != NULL)
+			while (pMove)
 			{
 				Node *pDel = pMove;
 				pMove = pMove->next;

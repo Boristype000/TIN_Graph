@@ -11,6 +11,7 @@ public:
 	Node* prev;
 	Node(int _id) { id = _id; next = NULL; prev = NULL; }
 	Node() { id = 0; next = NULL; prev = NULL; }
+	virtual ~Node(){}
 	int getID() { return id; }
 	void setID(int _id) { id = _id; }
 	virtual void printData()
