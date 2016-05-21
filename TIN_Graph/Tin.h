@@ -89,7 +89,7 @@ private:
 
 
 public:
-	int * dist;//起始点点到其它各点的距离
+	double ** dist;//起始点点到其它各点的距离
 	int nPoint;//总共的点数
 	int nTri;//三角形个数
 

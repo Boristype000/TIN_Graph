@@ -114,12 +114,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ACO.h" />
     <ClInclude Include="LinkList.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Tin.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ACO.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Tin.cpp" />
   </ItemGroup>
