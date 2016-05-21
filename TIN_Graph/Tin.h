@@ -42,7 +42,7 @@ class TIN_Edge :public Node
 {
 private:
 	TIN_Point *oriPoint;
-	TIN_Point *pPoint;//该边另一点的指针
+	TIN_Point *pPoint;//该边另一点的指针(相当于邻接表）
 	double length;
 
 public:

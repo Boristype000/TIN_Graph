@@ -2,7 +2,11 @@
 #include<iostream>
 #include"Tin.h"
 #include"Queue.h"
+#include<time.h>
+#include<fstream>
 using namespace std;
+
+
 
 int main() 
 {
@@ -45,9 +49,10 @@ int main()
 	cout << endl;
 	tQueue.pop_front();
 	tQueue.output();*/
+	clock_t cStart, cEnd;
+
 	int n;
 	cin >> n;
-
 	double tX, tY;
 	TIN_Graph testGraph;
 	for (int i = 0; i < n; i++)
@@ -56,23 +61,14 @@ int main()
 		TIN_Point * temp = new TIN_Point(tX, tY);
 		testGraph.insertPoint(temp);
 	}
+	cStart = clock();
 	testGraph.buildTIN();
-
+	cEnd = clock();
+	cout << "Time:" << (double)(cEnd - cStart) / CLOCKS_PER_SEC << "s";
 	cout << endl;
-
-	//testGraph.printPoint();
-
 	cout << endl;
-
-	//testGraph.printTri();
-
 	cout << testGraph.nTri;
-
 	cout << endl<<endl;
-
-	//testGraph.printEdgeCount();
-
-	//testGraph.printUnUsedPoint();
 
 
 	system("pause");

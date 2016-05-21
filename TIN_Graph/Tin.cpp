@@ -438,7 +438,7 @@ const bool & TIN_Point::isClose()
 
 TIN_Edge::TIN_Edge()
 {
-	nCount = 0; pPoint = NULL; length = -1;
+	nCount = 0; pPoint = NULL; length = INF;
 }
 
 TIN_Edge::TIN_Edge(TIN_Point* _ori, TIN_Point * _Point)
