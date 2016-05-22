@@ -155,7 +155,7 @@ TIN_Edge * TIN_Graph::findEdge(TIN_Point * pSource, int _id)
 	while (pMove_n)
 	{
 		TIN_Edge* pMove = dynamic_cast<TIN_Edge*>(pMove_n);
-		if (pMove->getPoint()->getID() == _id)
+		if (pMove->toPoint()->getID() == _id)
 		{
 			return pMove;
 		}
@@ -176,6 +176,7 @@ void TIN_Graph::addPoint2EdgeList(TIN_Point *_p1, TIN_Point *_p2)
 	{
 		TIN_Edge *pInsert = new TIN_Edge(_p1, _p2);
 		_p1->getEdgeList().push_back(pInsert);
+		_p1->Used = true; _p2->Used = true;//两个点都使用过了
 	}
 
 	Node *pMove_n = _p1->getEdgeList().front();
@@ -307,6 +308,71 @@ void TIN_Graph::edgeExpand(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3)
 
 }
 
+void TIN_Graph::FloydDistance()
+//还不能处理重复点的情况
+{
+	dist = new double*[nPoint];
+	for (int i = 0; i < nPoint; i++)
+	{
+		dist[i] = new double[nPoint];
+		for (int j = 0; j < nPoint; j++)
+		{
+			
+			if (i != j)
+			{
+				dist[i][j] = double(INF);
+			}
+			else
+			{
+				dist[i][j] = 0;
+			}
+		}
+		//INF的类型问题？
+	}	//初始化距离矩阵
+
+	Node * pMove = plPoint.front();
+	while (pMove)
+	{
+		TIN_Point * pMove_n = dynamic_cast<TIN_Point*>(pMove);
+		//if (pMove_n->getEdgeList().isEmpty())
+		//{
+		//	for (int i = 0; i < nPoint; i++)
+		//	{
+		//		dist[pMove_n->getID()][i] = -1.0;
+		//		dist[i][pMove_n->getID()] = -1.0;
+		//	}
+		//	pMove = pMove->next;
+		//	continue;
+		//}
+		Node * pMove_e = pMove_n->getEdgeList().front();
+		while(pMove_e)
+		{
+			TIN_Edge * pMove_en = dynamic_cast<TIN_Edge*>(pMove_e);
+			int tFrom = pMove_en->fromPoint()->getID();
+			int tTo = pMove_en->toPoint()->getID();
+			dist[tFrom][tTo] = pMove_en->getLength();
+			pMove_e = pMove_e->next;
+		}
+		pMove = pMove->next;
+	}//完成距离矩阵初始化
+	for (int k = 0; k < nPoint; k++)
+		for (int i = 0; i < nPoint; i++)
+			for (int j = 0; j < nPoint; j++)
+			{
+				//if (dist[i][j] != -1.0)
+
+					if (dist[i][j] > dist[i][k] + dist[k][j])
+					{
+						dist[i][j] = dist[i][k] + dist[k][j];
+					}
+
+			}
+				
+					
+
+}
+
+
 TIN_Graph::TIN_Graph()
 {
 	visited = NULL;
@@ -322,8 +388,11 @@ TIN_Graph::~TIN_Graph()
 	}
 	if (dist != NULL)
 	{
+		for (int i = 0; i < nPoint; i++)
+		{
+			delete[] dist[i];
+		}
 		delete[] dist;
-
 		dist = NULL;
 	}
 	nPoint = 0;
@@ -353,6 +422,7 @@ void TIN_Graph::buildTIN()
 		pMove_n = pMove_n->next;
 	}
 
+	FloydDistance();
 
 }
 
@@ -391,7 +461,7 @@ void TIN_Graph::printEdgeCount()
 			if (pMove_e->nCount)
 			{
 				cout << "(" << pMove->getID() << " -- ";
-				cout << pMove_e->getPoint()->getID() << ")" << "[" << pMove_e->nCount << "] ";
+				cout << pMove_e->toPoint()->getID() << ")" << "[" << pMove_e->nCount << "] ";
 			}
 			pMove_ef = pMove_ef->next;
 		}
@@ -438,15 +508,15 @@ const bool & TIN_Point::isClose()
 
 TIN_Edge::TIN_Edge()
 {
-	nCount = 0; pPoint = NULL; length = INF;
+	nCount = 0; endPoint = NULL; length = INF;
 }
 
 TIN_Edge::TIN_Edge(TIN_Point* _ori, TIN_Point * _Point)
 {
-	oriPoint = _ori;
-	pPoint = _Point;
+	startPoint = _ori;
+	endPoint = _Point;
 	nCount = 1;
-	length = getPtsDist_s(oriPoint, pPoint);
+	length = getPtsDist_s(startPoint, endPoint);
 }
 
 TIN_Edge::~TIN_Edge()

@@ -14,11 +14,12 @@ private:
 
 public:
 	double lcDistance;//距离左下角的距离
+	bool Used;
 
 	TIN_Point()
 		:lat(0), lng(0), lcDistance(0)
 	{
-		Closed = false;
+		Closed = false; Used = false;
 	}
 	TIN_Point(double _x, double _y);
 	~TIN_Point() {}
@@ -41,16 +42,15 @@ public:
 class TIN_Edge :public Node
 {
 private:
-	TIN_Point *oriPoint;
-	TIN_Point *pPoint;//该边另一点的指针(相当于邻接表）
+	TIN_Point *startPoint;
+	TIN_Point *endPoint;//该边另一点的指针(相当于邻接表）
 	double length;
 
 public:
 	short nCount;//同一条边最多被使用两次
-	TIN_Point* getPoint()
-	{
-		return pPoint;
-	}
+	TIN_Point* fromPoint() { return startPoint; }
+	TIN_Point* toPoint() { return endPoint; }
+	const double &getLength() { return length; }
 	TIN_Edge();
 	TIN_Edge(TIN_Point* _ori, TIN_Point *_Point);
 	~TIN_Edge();
@@ -86,7 +86,7 @@ private:
 	void initTri();//创建第一个三角形
 	void triExpand(Triangle *);//三角形拓展函数，传入参数为三角形号
 	void edgeExpand(TIN_Point*, TIN_Point*, TIN_Point*);//边拓展函数，p1p2待扩展
-
+	void FloydDistance();
 
 public:
 	double ** dist;//起始点点到其它各点的距离
@@ -103,4 +103,6 @@ public:
 	void printPoint();
 	void printEdgeCount();
 	void printUnUsedPoint();
+
+	void tempFloyd() { FloydDistance(); }
 };

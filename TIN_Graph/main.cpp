@@ -67,8 +67,22 @@ int main()
 	cout << "Time:" << (double)(cEnd - cStart) / CLOCKS_PER_SEC << "s";
 	cout << endl;
 	cout << endl;
-	cout << testGraph.nTri;
+	cout << testGraph.nPoint;
 	cout << endl<<endl;
+	testGraph.tempFloyd();
+
+	for (int i = 0; i < testGraph.nPoint; i++)
+	{
+		for (int j = 0; j < testGraph.nPoint; j++)
+		{
+			cout << testGraph.dist[i][j] << "\t";
+		}
+		cout << endl;
+	}
+	
+	testGraph.printUnUsedPoint();
+	cout << testGraph.dist[43][30];
+	
 
 
 	system("pause");

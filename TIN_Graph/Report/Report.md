@@ -28,11 +28,8 @@ private:
 	double lat, lng;//每个点的坐标值
 	myList edgeList;//边表
 	bool Closed;//是否为闭合点的标志
-
-
 public:
 	double lcDistance;//距离左下角的距离
-
 	TIN_Point()
 		:lat(0), lng(0), lcDistance(0)
 	{
@@ -40,22 +37,17 @@ public:
 	}
 	TIN_Point(double _x, double _y);
 	~TIN_Point() {}
-
-	const int &getID() { return id; }
-	void setID(int _id) { id = _id; }
-
 	const double &getLat() { return lat; }
 	const double &getLng() { return lng; }
-
-	double sortSeed() { return lcDistance; }//排序种子函数，返回该派生类用于排序的依据
-
-	myList &getEdgeList() { return edgeList; }
-	void printData();
-
-	const bool &isClose();//
-	void Closeit() { Closed = true; }
+	double sortSeed() { return lcDistance; }
 };
 ```
+
+#### 2.2 随机选点
+
+
+
+#### 2.3 最短路径
 
 
 
