@@ -68,8 +68,8 @@ public:
 	double getArea() { return nArea; }
 	void getVertex(TIN_Point*&, TIN_Point*&, TIN_Point*&);
 	void printData();
+	TIN_Point ** getVertex();
 };
-
 
 class TIN_Graph
 {
@@ -103,6 +103,8 @@ public:
 	void printPoint();
 	void printEdgeCount();
 	void printUnUsedPoint();
+
+	void toCSV();
 
 	void tempFloyd() { FloydDistance(); }
 };

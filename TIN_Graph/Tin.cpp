@@ -1,6 +1,7 @@
 #include "Tin.h"
 #include <cmath>
 #include<cassert>
+#include<fstream>
 using namespace std;
 
 #define EARTH_RADIUS 6378.137
@@ -108,6 +109,11 @@ void Triangle::printData()
 		"Point3(" << pVertexT[2]->getLat() << ","
 		<< pVertexT[2]->getLng() << ")" << "[" << pVertexT[2]->getID() << "] "
 		<< endl;
+}
+
+TIN_Point ** Triangle::getVertex()
+{
+	return pVertexT;
 }
 
 bool TIN_Graph::Delaunay(TIN_Point *_p1, TIN_Point *_p2, TIN_Point *_p3, TIN_Point *_p4)
@@ -372,7 +378,6 @@ void TIN_Graph::FloydDistance()
 
 }
 
-
 TIN_Graph::TIN_Graph()
 {
 	visited = NULL;
@@ -482,6 +487,29 @@ void TIN_Graph::printUnUsedPoint()
 		}
 		pMove_n = pMove_n->next;
 	}
+}
+
+void TIN_Graph::toCSV()
+{
+	ofstream out("ouPoint.csv");
+
+	
+	Node * pMove = lTriangle.front();
+	int tId = 0;
+	if (out.is_open())
+	{
+		out << "id," << "lat1," << "lng1," << "lat2," << "lng2," << "lat3," << "lng3,\n";
+		while (pMove)
+		{
+			tId++;
+			Triangle *pMove_t = dynamic_cast<Triangle*>(pMove);
+			out << tId << "," << pMove_t->getVertex()[0]->getLat() << pMove_t->getVertex()[0]->getLng()
+				<< pMove_t->getVertex()[1]->getLat() << pMove_t->getVertex()[1]->getLng()
+				<< pMove_t->getVertex()[2]->getLat() << pMove_t->getVertex()[2]->getLng()<<"\n";
+			pMove = pMove->next;
+		}
+	}
+	out.close();
 }
 
 TIN_Point::TIN_Point(double _x, double _y)
